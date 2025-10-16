@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+
+/**
+ * Módulos principales
+ */
+const app = require('../src/app');
+const debug = require('debug')('backend:server');
+const http = require('http');
+
+/**
+ * Obtener puerto desde las variables de entorno o usar 4000 por defecto
+ */
+const port = normalizePort(process.env.PORT || '4000');
+app.set('port', port);
+
+/**
+ * Crear el servidor HTTP
+ */
+const server = http.createServer(app);
+
+/**
+ * Escuchar en el puerto definido
+ */
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalizar el puerto en número o string
+ */
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
+  return false;
+}
+
+/**
+ * Manejar errores del servidor
+ */
+function onError(error) {
+  if (error.syscall !== 'listen') throw error;
+
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+
+  switch (error.code) {
+    case 'EACCES':
+      console.error(`${bind} requiere privilegios elevados`);
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(`${bind} ya está en uso`);
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Evento cuando el servidor está escuchando
+ */
+function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  console.log(`🚀 Servidor corriendo en http://localhost:${port}`);
+  debug(`Escuchando en ${bind}`);
+}
+
