@@ -4,7 +4,8 @@ const ventaProductoRepository = require('../repositories/ventasProductosReposito
 // Obtener todos los registros de productos vendidos
 exports.obtenerVentasProductos = async (req, res) => {
   try {
-    const ventasProductos = await ventaProductoRepository.obtenerTodos();
+    const { estado } = req.query; // 'activa' o 'desactivada'
+    const ventasProductos = await ventaProductoRepository.obtenerTodos(estado);
     res.status(200).json(ventasProductos);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -62,11 +63,11 @@ exports.actualizarProductoEnVenta = async (req, res) => {
 exports.desactivarVenta = async (req, res) => {
   try {
     const { id } = req.params;
-    const resultado = await ventaProductoRepository.desactivar(id);
+    const { motivo } = req.body; // 🔹 recibir motivo desde frontend
 
-    res.status(200).json({
-      message: resultado.message
-    });
+    const resultado = await ventaProductoRepository.desactivar(id, motivo);
+
+    res.status(200).json(resultado);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

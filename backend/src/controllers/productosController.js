@@ -20,29 +20,31 @@ const validarResultado = (req) => {
 };
 
 // Controladores
-exports.obtenerProductos = async (req, res) => {
+exports.obtenerProducto = async (req, res) => {
   try {
-    const productos = await productosRepository.obtenerTodos();
-    res.json(productos);
-  } catch (error) {
-    res.status(error.status || 500).json({ message: 'Error al obtener productos', error: error.message });
-  }
-};
+    const { parametro } = req.params; // puede ser ID, nombre o vacío
+    let productos;
 
-exports.obtenerProductoPorId = async (req, res) => {
-  try {
-    // Validar ObjectId
-    const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'ID inválido' });
+    if (!parametro) {
+      // Traer todos los productos
+      productos = await productosRepository.obtenerTodos();
+    } else if (mongoose.Types.ObjectId.isValid(parametro)) {
+      // Buscar por ID
+      const producto = await productosRepository.obtenerPorId(parametro);
+      if (!producto) return res.status(404).json({ message: 'Producto no encontrado' });
+      productos = [producto]; // devolvemos como array
+    } else {
+      // Buscar por nombre (parcial, insensible a mayúsculas)
+      productos = await productosRepository.obtenerPorNombre(parametro);
+      if (productos.length === 0) return res.status(404).json({ message: 'Producto no encontrado' });
     }
 
-    const producto = await productosRepository.obtenerPorId(id);
-    if (!producto) return res.status(404).json({ message: 'Producto no encontrado' });
-
-    res.json(producto);
+    res.json(productos);
   } catch (error) {
-    res.status(error.status || 500).json({ message: 'Error al obtener el producto', error: error.message });
+    res.status(error.status || 500).json({
+      message: 'Error al obtener productos',
+      error: error.message
+    });
   }
 };
 

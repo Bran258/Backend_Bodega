@@ -14,8 +14,8 @@ const validarProductoRules = [
 ];
 
 // === Rutas para productos ===
-router.get('/lista_productos', productosController.obtenerProductos);
-router.get('/:id', productosController.obtenerProductoPorId);
+router.get('/lista_productos', productosController.obtenerProducto); // todos
+router.get('/buscar/:parametro?', productosController.obtenerProducto); // id o nombre
 router.post('/crear_producto', validarProductoRules, productosController.crearProducto);
 router.put('/:id', validarProductoRules, productosController.actualizarProducto);
 router.patch('/:id/desactivar', productosController.desactivarProducto);

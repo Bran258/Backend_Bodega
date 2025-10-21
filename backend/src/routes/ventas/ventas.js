@@ -9,7 +9,7 @@ router.get('/lista', ventasProductosController.obtenerVentasProductos);
 router.get('/producto/:id', ventasProductosController.obtenerVentaProductoPorId);
 router.post('/crear_venta', ventasProductosController.crearVenta);
 router.put('/actualizar_producto/:id', ventasProductosController.actualizarProductoEnVenta);
-router.patch('/productos/:id', ventasProductosController.desactivarVenta);
+router.patch('/desactivar_venta/:id', ventasProductosController.desactivarVenta);
 
 
 module.exports = router;

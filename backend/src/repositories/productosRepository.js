@@ -5,8 +5,7 @@ const Producto = require('../models/Producto');
 // Obtener todos los productos activos
 const obtenerTodos = async () => {
   try {
-    const productos = await Producto.find({ estado: true });
-    return productos;
+    return await Producto.find({ estado: true });
   } catch (error) {
     throw new Error('Error al obtener los productos: ' + error.message);
   }
@@ -15,12 +14,25 @@ const obtenerTodos = async () => {
 // Obtener un producto por su ID
 const obtenerPorId = async (id) => {
   try {
-    const producto = await Producto.findById(id);
-    return producto;
+    return await Producto.findById(id);
   } catch (error) {
     throw new Error('Error al obtener el producto: ' + error.message);
   }
 };
+
+// Obtener un producto por nombre (coincidencia parcial, insensible a mayúsculas)
+const obtenerPorNombre = async (nombre) => {
+  try {
+    return await Producto.find({
+      nombre: { $regex: nombre, $options: "i" }, // búsqueda parcial, insensible a mayúsculas
+      //estado: true, // solo productos activos
+    });
+  } catch (error) {
+    throw new Error('Error al obtener el producto por nombre: ' + error.message);
+  }
+};
+
+
 
 // Crear un nuevo producto
 const crear = async (datos) => {
@@ -88,6 +100,7 @@ const activar = async (id) => {
 module.exports = {
   obtenerTodos,
   obtenerPorId,
+  obtenerPorNombre,
   crear,
   actualizar,
   desactivar,

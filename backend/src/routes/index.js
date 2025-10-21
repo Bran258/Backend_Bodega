@@ -4,13 +4,13 @@ const router = express.Router();
 // Importar subrutas
 const productosRouter = require('./productos/Productos');
 const ventasRouter = require('./ventas/Ventas');
-//const proveedoresRouter = require('./proveedores/proveedores');
+const proveedoresRouter = require('./proveedores/Proveedores');
 //const comprasRouter = require('./compras/compras');
 
 // Usar rutas
 router.use('/productos', productosRouter);
 router.use('/ventas', ventasRouter);
-//router.use('/proveedores', proveedoresRouter);
+router.use('/proveedores', proveedoresRouter);
 //router.use('/compras', comprasRouter);
 
 // Ruta raíz de la API
